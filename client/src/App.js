@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
+//import LOGIN from './pages/Register';
 import "./stylesheets/alignments.css";
 import "./stylesheets/sizes.css";
 import "./stylesheets/form-elements.css";
 import "./stylesheets/custom.css";
 import "./stylesheets/theme.css";
-
+import Register from './pages/Register';
 
 function App() {
   return (

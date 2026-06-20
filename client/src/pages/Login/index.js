@@ -1,9 +1,48 @@
 import React from "react";
+import { Form } from 'antd';
+import Button from "../../components/Button";
+import {Link} from 'react-router-dom'
 
-function Login(){
+function Register(){
+         const onFinish = (values) => {
+                  console.log("Success:", values)
+         }
          return (
-                  <div>Login</div>
+                  <div className="flex justify-center h-screen item-center bg-primary">
+                           <div className="card p-3 w-400">
+                                    <h1 className="text-xl mb-1">MOVIEMAGIC - LOGIN</h1>
+                                    <hr/>
+                                    <Form
+                                    layout="vertical" 
+                                    className="mt-1"
+                                    onFinish={onFinish}
+                                    >
+                                             <Form.Item 
+                                             label="Email"
+                                             name="email"
+                                             rules={[{required: true, message:'please input your email'}]}
+                                             >
+                                                      <input type="email"/>
+                                             </Form.Item>
+
+                                             <Form.Item 
+                                             label="Password"
+                                             name="password"
+                                             rules={[{required: true, message:'please input your password'}]}
+                                             >
+                                                      <input type="password"/>
+                                             </Form.Item>
+
+                                             <div className = "flex flex-col mt-2 gap-1">
+                                                      <Button fullWidth title='LOGIN' type="submit" />
+                                                      <Link to='/register'>
+                                                      {" "}
+                                                      Don't have an account? Register</Link>
+                                             </div>
+                                    </Form>
+                           </div>
+                  </div>
          )
 }
 
-export default Login 
+export default Register 

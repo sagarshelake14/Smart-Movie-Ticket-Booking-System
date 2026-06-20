@@ -11,8 +11,16 @@
          background-color: var(--color-secondary);
 }
 
+.bg-white {
+         background-color: white;
+}
+
+.bg-black {
+         background-color: black;
+}
+
 .text-primary {
-         color: var(--color-primary);
+         color: var(--color-primary) !important
 }
 
 .text-black {

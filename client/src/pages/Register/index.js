@@ -1,15 +1,21 @@
 import React from "react";
-import { Button, Form } from 'antd';
+import { Form } from 'antd';
+import Button from "../../components/Button";
+import {Link} from 'react-router-dom'
 
 function Register(){
+         const onFinish = (values) => {
+                  console.log("Success:", values)
+         }
          return (
                   <div className="flex justify-center h-screen item-center bg-primary">
                            <div className="card p-3 w-400">
-                                    <h1 className="text-xl">MOVIEMAGIC - REGISTER</h1>
+                                    <h1 className="text-xl mb-1">MOVIEMAGIC - REGISTER</h1>
                                     <hr/>
                                     <Form
                                     layout="vertical" 
                                     className="mt-1"
+                                    onFinish={onFinish}
                                     >
                                              <Form.Item 
                                              label="Name"
@@ -34,6 +40,11 @@ function Register(){
                                              >
                                                       <input type="password"/>
                                              </Form.Item>
+
+                                             <div className = "flex flex-col mt-2 gap-1">
+                                                      <Button fullWidth title='REGISTER' type="submit" />
+                                                      <Link to='/login'>Already have an account ? Login</Link>
+                                             </div>
                                     </Form>
                            </div>
                   </div>
