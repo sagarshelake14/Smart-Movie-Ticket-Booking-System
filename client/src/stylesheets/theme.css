@@ -15,6 +15,14 @@
          color: var(--color-primary);
 }
 
+.text-black {
+         color: #000
+}
+.text-white {
+         color: #fff
+}
+
+
 .text-secondary {
          color: var(--color-secondary);
 }
