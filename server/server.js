@@ -8,7 +8,7 @@ app.use(express.json())
 
 const userRoute = require("./routes/usersRoutes");
 
-app.use("/api/users", userRoutes);
+app.use("/api/users", userRoute);
 app.listen(port, () => {
   console.log(`Node JS server is running on port ${port}`)
 })

@@ -1,11 +1,25 @@
 import React from "react";
-import { Form } from 'antd';
+import { Form, message } from 'antd';
 import Button from "../../components/Button";
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
+import { LoginUser } from "../../apicalls/users";
 
 function Register(){
-         const onFinish = (values) => {
-                  console.log("Success:", values)
+         const navigate = useNavigate();
+         const onFinish = async (values) => {
+                  try {
+                           const response = await LoginUser(values);
+                           if(response.success){
+                                    message.success(response.message);
+                                    localStorage.setItem("token", response.data);
+                                    navigate("/");
+                           }
+                           else{
+                                    message.error(response.message);
+                           }
+                  } catch (error) {
+                           message.error(error.message);
+                  }
          }
          return (
                   <div className="flex justify-center h-screen item-center bg-primary">

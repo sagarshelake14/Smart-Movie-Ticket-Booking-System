@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const users = require('../models/user.model');
 const bcrypt = require('bcryptjs');
+const { response } = require('express');
 const jwt = require('jsonwebtoken');
 
 // register a new user
@@ -10,7 +11,7 @@ router.post('/register', async (req, res)=>{
          try {
                  //Check is user is already exist bor not
                  const userExists = await users.findOne({email: req.body.email});
-                 if(!userExists){
+                 if(userExists){
                            return res.send({
                                     success: false,
                                     message: "User already exists",
@@ -67,7 +68,11 @@ router.post('/login', async (req, res)=>{
                            expiresIn: "1d",
                   });
 
-                  user.send({ success: true, message: "User logged in successFully", data: token})
+                res.send({ 
+                        success: true, 
+                        message: "User logged in successFully", 
+                        data: token,
+                })
                   
          } catch (error) {
                   res.send({
