@@ -3,6 +3,7 @@ const users = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
+const authmiddleware = require('../middlewares/authmiddleware');
 
 // register a new user
 
@@ -82,5 +83,24 @@ router.post('/login', async (req, res)=>{
          }
 
 })
+
+// get user details by id
+router.get('/get-current-user', authmiddleware, async (req, res)=>{
+        try {
+                const user = await User.findById(req.body.userId).select('-password');
+                res.send({
+                        success: true, 
+                        message: "User details fetched successfully",
+                        data: user,
+                });
+        } catch (error) {
+                res.send({
+                        success: false,
+                        message: error.message,
+                });
+        }
+})
+
+
 
 module.exports = router;
