@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const users = require('../models/user.model');
+const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
-const { response } = require('express');
+//const { response } = require('express');
 const jwt = require('jsonwebtoken');
 const authmiddleware = require('../middlewares/authmiddleware');
 
@@ -11,7 +11,7 @@ router.post('/register', async (req, res)=>{
 
          try {
                  //Check is user is already exist bor not
-                 const userExists = await users.findOne({email: req.body.email});
+                 const userExists = await User.findOne({email: req.body.email});
                  if(userExists){
                            return res.send({
                                     success: false,
@@ -24,7 +24,7 @@ router.post('/register', async (req, res)=>{
                  req.body.password = hashedPassword;
 
                  // create a new user  || save the user
-                 const newUser = new users(req.body);
+                 const newUser = new User(req.body);
                  await newUser.save();
 
                  res.send({
@@ -45,7 +45,7 @@ router.post('/login', async (req, res)=>{
 
          try {
                   // check if  user exits
-                  const user = await users.findOne({email: req.body.email});
+                  const user = await User.findOne({email: req.body.email});
                   if(!user){
                           return res.send({
                                     success: false,
@@ -65,15 +65,19 @@ router.post('/login', async (req, res)=>{
                   }
 
                   // create and assign a token
-                  const token = jwt.sign({ userId: user._id }, process.env.jwt_secret, {
-                           expiresIn: "1d",
-                  });
+                 const token = jwt.sign(
+                        { userId: user._id },
+                        process.env.jwt_secret,
+                        {
+                                expiresIn: "1d",
+                        }
+                );
 
                 res.send({ 
                         success: true, 
                         message: "User logged in successFully", 
-                        data: token,
-                })
+                        data: token
+                });
                   
          } catch (error) {
                   res.send({
@@ -84,6 +88,8 @@ router.post('/login', async (req, res)=>{
 
 })
 
+
+
 // get user details by id
 router.get('/get-current-user', authmiddleware, async (req, res)=>{
         try {
@@ -93,6 +99,7 @@ router.get('/get-current-user', authmiddleware, async (req, res)=>{
                         message: "User details fetched successfully",
                         data: user,
                 });
+
         } catch (error) {
                 res.send({
                         success: false,
@@ -100,7 +107,5 @@ router.get('/get-current-user', authmiddleware, async (req, res)=>{
                 });
         }
 })
-
-
-
 module.exports = router;
+
