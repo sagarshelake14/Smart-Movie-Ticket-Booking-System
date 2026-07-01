@@ -91,21 +91,42 @@ router.post('/login', async (req, res)=>{
 
 
 // get user details by id
-router.get('/get-current-user', authmiddleware, async (req, res)=>{
-        try {
-                const user = await User.findById(req.body.userId).select('-password');
-                res.send({
-                        success: true, 
-                        message: "User details fetched successfully",
-                        data: user,
-                });
+// router.get('/get-current-user', authmiddleware, async (req, res)=>{
+//         try {
+//                 const user = await User.findById(req.body.userId).select('-password');
+//                 res.send({
+//                         success: true, 
+//                         message: "User details fetched successfully",
+//                         data: user,
+//                 });
 
-        } catch (error) {
-                res.send({
-                        success: false,
-                        message: error.message,
-                });
+//         } catch (error) {
+//                 res.send({
+//                         success: false,
+//                         message: error.message,
+//                 });
+//         }
+// })
+
+// Example of your GET route
+router.get("/get-current-user", authmiddleware, async (req, res) => {
+    try {
+        // FIX: Change req.body.userId to req.userId
+        const user = await User.findById(req.userId); 
+        
+        if (!user) {
+            return res.send({ success: false, message: "User does not exist" });
         }
-})
+        
+        res.send({
+            success: true,
+            message: "User fetched successfully",
+            data: user
+        });
+    } catch (error) {
+        res.status(500).send({ success: false, message: error.message });
+    }
+});
+
 module.exports = router;
 

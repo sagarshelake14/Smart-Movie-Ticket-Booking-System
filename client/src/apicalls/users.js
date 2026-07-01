@@ -7,7 +7,8 @@ export const RegisterUser = async (payload)=>{
                   const response = await axiosInstance.post("/api/users/register", payload);
                   return response.data;
          } catch (error) {
-                  return error.response;
+                  //return error.response;
+                   return error.response?.data || { success: false, message: error.message };
          }
 };
 
@@ -19,17 +20,19 @@ export const LoginUser = async (payload) => {
                   return response.data;
                   
          } catch (error) {
-                  return error.response;
+                  //return error.response;
+                   return error.response?.data || { success: false, message: error.message };
          }
 }
 
 // get current user
-export const GetCurrentUser = async ()=>{
-         try {
-                  const response = await axiosInstance.get("/api/users/get-current-user");
-                  //console.log(response.data);
-                  return response.data;
-         } catch (error) {
-                  return error.response;
-         }
+// get current user
+export const GetCurrentUser = async () => {
+    try {
+        const response = await axiosInstance.get("/api/users/get-current-user");
+        return response.data;
+    } catch (error) {
+        // Return the actual JSON payload sent by your authmiddleware catch block
+        return error.response?.data || { success: false, message: error.message };
+    }
 }
