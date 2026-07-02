@@ -10,6 +10,8 @@ import "./stylesheets/theme.css";
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useSelector } from 'react-redux';
+import Admin from './pages/Admin';
+import Profile from './pages/Profile';
 
 function App() {
   const {loading} = useSelector((state) => state.loaders)
@@ -23,6 +25,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

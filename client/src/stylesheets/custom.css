@@ -7,6 +7,25 @@
          width: 400px;
 }
 
+.content {
+         min-height: 85vh;
+         border: 1px solid #b1b1b1;
+}
+
+.underline {
+         text-decoration: underline;
+         cursor: pointer;
+
+}
+
+.cursor-pointer {
+         cursor: pointer;
+}
+
+.uppercase {
+         text-transform: uppercase;
+}
+
 /* loader*/
 
 .loader-parent{
