@@ -11,6 +11,14 @@
          background-color: var(--color-secondary);
 }
 
+.bg-error {
+         background-color: #ff0000;
+}
+
+.bg-warning{
+         background-color: #a2840e;
+}
+
 .bg-white {
          background-color: white;
 }
@@ -42,4 +50,3 @@
 .border-secondary {
          border-color: var(--color-secondary);
 }
-
