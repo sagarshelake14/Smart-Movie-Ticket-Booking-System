@@ -3,15 +3,21 @@ import { Modal, Form, Col, Row, message } from 'antd'
 import Button from '../../components/Button';
 import {useDispatch} from "react-redux"
 import {HideLoading, ShowLoading} from "../../redux/loadersSlice"
-import { AddMovie } from '../../apicalls/movies';
+import { AddMovie, UpdateMovie } from '../../apicalls/movies';
+import moment from 'moment';
 
 function MoviesForm({
          showMovieFormModel,
          setShowMovieFormModel,
          selectedMovie,
          setSelectedMovie,
-         formType
+         getData,
+         formType,
 }) {
+
+  if(selectedMovie){
+    selectedMovie.releaseDate = moment(selectedMovie.releaseDate).format("YYYY-MM-DD");
+  }
 const dispatch = useDispatch();
 const onFinish = async (values) => {
          try {
@@ -20,10 +26,14 @@ const onFinish = async (values) => {
                   if(formType === "add"){
                            response = await AddMovie(values);
                   }else{
-
+                    response = await UpdateMovie({
+                      ...values,
+                      movieId : selectedMovie._id
+                    });
                   }
 
                   if(response.success){
+                          getData()
                            message.success(response.message);
                            setShowMovieFormModel(false)
                   }
@@ -38,15 +48,20 @@ const onFinish = async (values) => {
 };
   return (
     <Modal
-         title={formType === "add" ? "Add Movie" : "Edit Movie"}
+         title={formType === "add" ? "ADD MOVIE" : "EDIT MOVIE"}
          open={showMovieFormModel}
-         onCancel={()=> setShowMovieFormModel(false)}
+         onCancel={()=> {
+          setShowMovieFormModel(false)
+          setSelectedMovie(null)
+         }
+        }
          footer={null}
          width={800}
     >
          <Form
          layout='vertical'
          onFinish={onFinish}
+         initialValues={selectedMovie}
          >
                   <Row gutter={16}>
                            <Col span={24}>
@@ -115,7 +130,11 @@ const onFinish = async (values) => {
 
                   <div className="flex justify-end gap-1">
                            <Button title='Cancel' variant='outlined' type='button'
-                           onClick={()=>setShowMovieFormModel(false)}
+                           onClick={()=>{
+                             setShowMovieFormModel(false)
+                             setSelectedMovie(null)
+                           }
+                          }
                            />
                            <Button title='Save' type='submit' />
                   </div>
