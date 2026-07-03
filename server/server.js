@@ -6,9 +6,11 @@ app.use(express.json())
 
 const usersRoute = require("./routes/usersRoute");
 const moviesRoute = require("./routes/moviesRoute")
+const theatreRoute = require("./routes/theatreRoute")
 
 app.use("/api/users", usersRoute);
 app.use("/api/movies", moviesRoute);
+app.use("/api/theatres", theatreRoute)
 
 const port = process.env.PORT || 5000
 app.listen(port, () => {
