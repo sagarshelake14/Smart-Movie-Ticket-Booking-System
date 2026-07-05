@@ -8,6 +8,7 @@ import { HideLoading, ShowLoading } from '../../redux/loadersSlice';
 import { GetAllMovies } from '../../apicalls/movies';
 import { DeleteMovie } from '../../apicalls/movies';
 
+
 function MoviesList() {
   const [movies, setMovies] = React.useState([]);
   const [showMovieFormModel, setShowMovieFormModel] = React.useState(false);
