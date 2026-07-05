@@ -35,18 +35,6 @@ export const GetAllTheatresByOwner = async (payload) => {
   }
 };
 
- export const DeleteTheatre = async (payload) => {
-  try {
-    const response = await axiosInstance.delete(
-      "/api/theatres/delete-theatre",
-      payload
-    );
-
-    return response.data;
-  } catch (error) {
-    return error.response.data;
-  }
-};
 
 //update theatre
 export const UpdateTheatre = async (payload) => {
@@ -60,6 +48,21 @@ export const UpdateTheatre = async (payload) => {
         return error.response;
     }
 };
+
+// Delete theatre
+export const DeleteTheatre = async (payload) => {
+ try {
+   const response = await axiosInstance.post(
+     "/api/theatres/delete-theatre",
+     payload
+   );
+
+   return response.data;
+ } catch (error) {
+   return error.response;
+ }
+};
+
 
 // import { axiosInstance } from ".";
 

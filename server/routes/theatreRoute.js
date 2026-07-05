@@ -75,4 +75,20 @@ router.post("/update-theatre", async (req, res)=>{
     }
 });
 
+// Delete theatre
+router.post("/delete-theatre", async (req, res) => {
+    try {
+        await Theatre.findByIdAndDelete(req.body.theatreId);
+        res.send({
+            success: true,
+            message: "Theatre deleted successfully",
+        });
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message,
+        });
+    }
+});
+
 module.exports = router
