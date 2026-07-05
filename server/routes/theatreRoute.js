@@ -2,6 +2,7 @@ const router = require("express").Router();
 const authMiddleware = require("../middlewares/authMiddleware");
 const Theatre = require("../models/theatreModel");
 
+
 router.post("/add-theatre", authMiddleware, async (req, res) => {
   try {
     const newTheatre = new Theatre(req.body);

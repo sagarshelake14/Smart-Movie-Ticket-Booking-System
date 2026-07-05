@@ -85,9 +85,20 @@ function TheatresList() {
       dataIndex: "email",
     },
     {
+      title: "STATUS",
+      dataIndex: "isActive",
+      render: (text, record) => {
+            if(text){
+              return 'Approved'
+            } else {
+              return 'Pending / Blocked'
+            }
+      },
+    },
+    {
       title: "ACTION",
       render: (text, record) => (
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           <i
             className="ri-delete-bin-line"
             onClick={() => handleDelete(record._id)}
@@ -101,6 +112,10 @@ function TheatresList() {
               setShowTheatreFormModal(true);
             }}
           ></i>
+
+          {(record.isActive && <span className="underline">
+            shows
+            </span>)}
         </div>
       ),
     },
