@@ -8,12 +8,14 @@ import {
   GetAllTheatresByOwner,
   DeleteTheatre,
 } from "../../apicalls/theatres";
+import Shows from "./shows";
 
 function TheatresList() {
   const [showTheatreFormModal, setShowTheatreFormModal] = useState(false);
   const [selectedTheatre, setSelectedTheatre] = useState(null);
   const [formType, setFormType] = useState("add");
   const [theatres, setTheatres] = useState([]);
+  const [openShowsModal = false, setOpenShowsModal] = useState(false);
 
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.users);
@@ -113,7 +115,12 @@ function TheatresList() {
             }}
           ></i>
 
-          {(record.isActive && <span className="underline">
+          {(record.isActive && <span className="underline"
+            onClick={()=>{
+                setSelectedTheatre(record)
+                setOpenShowsModal(true);
+            }}
+          >
             shows
             </span>)}
         </div>
@@ -151,6 +158,8 @@ function TheatresList() {
           getData={getData}
         />
       )}
+
+      {openShowsModal && <Shows openShowsModal={openShowsModal} setOpenShowsModal={setOpenShowsModal} theatre={selectedTheatre} />}
     </div>
   );
 }
