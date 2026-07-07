@@ -4,6 +4,9 @@ import Button from "../../../components/Button";
 import {GetAllMovies} from '../../../apicalls/movies'
 import { useDispatch } from "react-redux";
 import { HideLoading,ShowLoading } from "../../../redux/loadersSlice";
+import { AddShow, DeleteShow, GetAllShows } from "../../../apicalls/theatres";
+import { GetAllShowsByTheatre } from "../../../apicalls/theatres";
+import moment from 'moment';
 
 
 function Shows({ openShowsModal, setOpenShowsModal , theatre }) {
@@ -12,14 +15,23 @@ function Shows({ openShowsModal, setOpenShowsModal , theatre }) {
     const [movies, setMovies] = React.useState([]);
     const dispatch = useDispatch();
 
-         const getMovies = async () => {
+    const getData = async () => {
                   try {
                            dispatch(ShowLoading());
-                           const response = await GetAllMovies();
-                  if (response.success) {
-                           setMovies(response.data);
-                  } else {
-                           message.error(response.message);
+                           const moviesResponse = await GetAllMovies();
+                            if (moviesResponse.success) {
+                                    setMovies(moviesResponse.data);
+                            } else {
+                                    message.error(moviesResponse.message);
+                            }
+
+                  const showsResponse = await GetAllShowsByTheatre({
+                    theatreId : theatre._id,
+                  })
+                  if(showsResponse.success){
+                        setShows(showsResponse.data);
+                  }else{
+                    message.error(showsResponse.message);
                   }
                   dispatch(HideLoading());
                   } catch (error) {
@@ -28,14 +40,57 @@ function Shows({ openShowsModal, setOpenShowsModal , theatre }) {
                   }
          };
 
-   const columns = [
+    const handleAddShow = async (values) => {
+    try {
+        dispatch(ShowLoading());
+        const response = await AddShow({
+            ...values,
+            theatre : theatre._id
+        })
+        if (response.success) {
+            message.success(response.message);
+            getData();
+            setView("table");
+        } else {
+            message.error(response.message);
+        }
+        dispatch(HideLoading());
+    } catch (error) {
+        message.error(error.message);
+        dispatch(HideLoading());
+    }
+};   
+
+    const handleDelete = async (id) => {
+    try {
+        dispatch(ShowLoading());
+        const response = await DeleteShow({ showId: id });
+
+        if (response.success) {
+            message.success(response.message);
+            getData();
+        } else {
+            message.error(response.message);
+        }
+        dispatch(HideLoading());
+    } catch (error) {
+        message.error(error.message);
+        dispatch(HideLoading());
+    }
+};
+
+  const columns = [
          {
                   title: "Show Name",
                   dataIndex: "name", 
          },
          {
                   title: "Date",
-                  dataIndex: "date", 
+                  dataIndex: "date",
+                  // Optional: Clean up ISO date format string for display
+                  render: (text, record) => {
+                    return moment(text).format("MMM-Do-YYYY")
+                  }
          },
          {
                   title: "Time",
@@ -43,28 +98,42 @@ function Shows({ openShowsModal, setOpenShowsModal , theatre }) {
          },
          {
                   title: "Movie",
-                  dataIndex: "movie", 
+                  dataIndex: "movie",
+                  // Looks up the movie object by its ID to display the title
+                  render: (text, record) => {
+                      return record.movie.title;
+                  }
          },
          {
-                  title: "ticket price",
-                  dataIndex: "ticketprice", 
+                  title: "Ticket Price",
+                  dataIndex: "ticketPrice", // Changed from "ticketprice" to match camelCase
          },
          {
                   title: "Total Seats",
-                  dataIndex: "TotalSeats", 
+                  dataIndex: "totalSeats", // Changed from "TotalSeats" to lowercase 't'
          },
          {
                   title: "Available Seats",
-                  dataIndex: "availableSeats", 
+                  dataIndex: "availableSeats", // If availableSeats is empty on new shows, fallback to totalSeats
+                  render: (text, record) => {
+                        return record.totalSeats - record.bookedSeats.length;
+                  }
          },
          {
                   title: "Action",
                   dataIndex: "action",
+                    render: (text, record) => (
+                <div className="flex gap-3 items-center">
+                {record.bookedSeats.length === 0 &&  
+                <i className="ri-delete-bin-line" onClick={() => handleDelete(record._id)}
+                ></i>}
+        </div>
+      ),
          }
    ]
    
    useEffect(()=>{
-         getMovies();
+         getData();
    }, [])
 
     return (
@@ -97,10 +166,15 @@ function Shows({ openShowsModal, setOpenShowsModal , theatre }) {
 
          {view === "table" && (
                   <Table columns={columns} dataSource={shows} />
+
+
+
          )}
 
         {view === "form" && (
-                  <Form layout="vertical">
+                  <Form layout="vertical"
+                  onFinish={handleAddShow}
+                  >
                   <Row
                   gutter={[16, 16]}
                   >
@@ -117,7 +191,9 @@ function Shows({ openShowsModal, setOpenShowsModal , theatre }) {
                   <Form.Item label="Date" name="date"
                            rules={[{required: true, message: "Please input show date!"}]}
                   >
-                  <input type="date" />
+                  <input type="date" 
+                  min={new Date().toISOString().split("T")[0]}
+                  />
                   </Form.Item>
                   </Col>
 
