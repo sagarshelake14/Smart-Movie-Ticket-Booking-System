@@ -42,3 +42,13 @@ export const DeleteMovie = async (payload) => {
         return error.response;
     }
 }
+
+// Add this inside ../../apicalls/movies
+export const GetMovieById = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/api/movies/get-movie-by-id/${id}`);
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};

@@ -12,6 +12,7 @@ app.use("/api/users", usersRoute);
 app.use("/api/movies", moviesRoute);
 app.use("/api/theatres", theatreRoute)
 
+
 const port = process.env.PORT || 5000
 app.listen(port, () => {
   console.log(`Node JS server is running on port ${port}`)

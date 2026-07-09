@@ -152,45 +152,96 @@ router.post("/delete-show", async (req, res) => {
 
 
 // get all unique theatres which have shows of a movie
+// router.post("/get-all-theatres-by-movie", async (req, res) => {
+//     try {
+//         const { movie, date } = req.body;
+
+//         // find all shows of a movie
+//         const shows = await Show.find({ movie, date: params.id })
+//             .populate("theatre")
+//             .sort({ createdAt: -1 });
+
+//         // get all unique theatres
+//         let uniqueTheatres = [];
+//         shows.forEach((show) => {
+//         const theatre = uniqueTheatres.find(
+//             (theatre) => theatre._id == show.theatre._id
+//         );
+
+//         if (!theatre) {
+//             const showsForThisTheatre = shows.filter(
+//                 (showObj) => showObj.theatre._id == show.theatre._id
+//             );
+//             uniqueTheatres.push({
+//                 ...show.theatre._doc,
+//                 shows: showsForThisTheatre,
+//             });
+//         }
+//     });
+
+//     res.send({
+//         success: true, 
+//         message: "Theatres fetched successfully",
+//         data: uniqueTheatres,
+//     });
+
+//     } catch (error) {
+//         res.send({
+//             success: false,
+//             message: error.message,
+//         });
+//     }
+// });
 router.post("/get-all-theatres-by-movie", async (req, res) => {
     try {
         const { movie, date } = req.body;
 
-        // find all shows of a movie
-        const shows = await Show.find({ movie, date })
+        // 1. Find all shows matching the movie and date, then populate the theatre details
+        const shows = await Show.find({ movie, date }) // Fixed: changed params.id to date
             .populate("theatre")
             .sort({ createdAt: -1 });
 
-        // get all unique theatres
+        // 2. Group the unique theatres and nest their respective shows
         let uniqueTheatres = [];
+        
         shows.forEach((show) => {
-        const theatre = uniqueTheatres.find(
-            (theatre) => theatre._id == show.theatre._id
-        );
+            // Guard clause if theatre population failed/null
+            if (!show.theatre) return; 
 
-        if (!theatre) {
-            const showsForThisTheatre = shows.filter(
-                (showObj) => showObj.theatre._id == show.theatre._id
+            // Check if the theatre is already added to our unique array
+            const theatreExists = uniqueTheatres.find(
+                (t) => t._id.toString() === show.theatre._id.toString() // Fixed: Added .toString()
             );
-            uniqueTheatres.push({
-                ...show.theatre._doc,
-                shows: showsForThisTheatre,
-            });
-        }
-    });
 
-    res.send({
-        success: true, 
-        message: "Theatres fetched successfully",
-        data: uniqueTheatres,
-    });
+            if (!theatreExists) {
+                // Filter all shows belonging to this specific theatre
+                const showsForThisTheatre = shows.filter(
+                    (showObj) => showObj.theatre && showObj.theatre._id.toString() === show.theatre._id.toString()
+                );
+                
+                // Push the theatre data along with its grouped shows array
+                uniqueTheatres.push({
+                    ...show.theatre._doc,
+                    shows: showsForThisTheatre,
+                });
+            }
+        });
+
+        // 3. Send successful response
+        res.send({
+            success: true, 
+            message: "Theatres and shows fetched successfully",
+            data: uniqueTheatres,
+        });
 
     } catch (error) {
-        res.send({
+        // Safe fallback for runtime errors
+        res.status(500).send({
             success: false,
             message: error.message,
         });
     }
 });
+
 
 module.exports = router

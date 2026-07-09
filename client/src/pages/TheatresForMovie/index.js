@@ -19,6 +19,7 @@ function TheatresForMovie() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
+
   const getData = async () => {
     try {
       dispatch(ShowLoading());
