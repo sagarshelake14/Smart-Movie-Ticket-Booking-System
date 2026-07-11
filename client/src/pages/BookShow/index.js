@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom'
 import { HideLoading, ShowLoading } from '../../redux/loadersSlice'
 import { GetShowById } from '../../apicalls/theatres'
 import moment from 'moment'
+import StripeCheckout from 'react-stripe-checkout'
+import Button from '../../components/Button'
 
 function BookShow() {
     const [show , setShow] = React.useState(null)
@@ -79,6 +81,9 @@ function BookShow() {
     );
 };
 
+    const onToken = (token) => {
+        console.log(token)
+    }
 
 
     useEffect(() => {
@@ -119,6 +124,16 @@ function BookShow() {
             <div className="flex justify-center mt-2 p-3">
                 {getSeats()}
             </div>
+
+            {selectedSeats.length > 0 && <div className="mt-2 flex justify-center">
+                <StripeCheckout 
+               // currency='INR'
+                token={onToken}
+                amount={selectedSeats.length * show.ticketPrice * 100}
+                stripeKey='pk_test_51Ts267LdIVx1OOu0e1lg3GAqtIG2XsMNP707jguaR0oGoX9GLoTpPRU2y275i2VAfwtkF6AhTsBATUa1X4QSXqyi00wg2VrSh8'>
+                    <Button title='Book Now' />
+                </StripeCheckout>
+            </div>}
         </div>
     )
 }
