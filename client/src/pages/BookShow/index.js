@@ -7,6 +7,7 @@ import { GetShowById } from '../../apicalls/theatres'
 import moment from 'moment'
 import StripeCheckout from 'react-stripe-checkout'
 import Button from '../../components/Button'
+import { MakePayment } from '../../apicalls/bookings'
 
 function BookShow() {
     const [show , setShow] = React.useState(null)
@@ -81,8 +82,21 @@ function BookShow() {
     );
 };
 
-    const onToken = (token) => {
-        console.log(token)
+    const onToken = async(token) => {
+        try {
+            dispatch(HideLoading());
+            const response = await MakePayment({
+                token,
+                amount: selectedSeats.length * show.ticketPrice * 100,
+            });
+            if(response.success){
+                message.success(response.message);
+            }
+            dispatch(HideLoading());
+        } catch (error) {
+            message.error(error.message);
+            dispatch(HideLoading());
+        }
     }
 
 
