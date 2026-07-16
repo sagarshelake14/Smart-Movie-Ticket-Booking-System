@@ -85,10 +85,10 @@ function BookShow() {
     const onToken = async(token) => {
         try {
             dispatch(HideLoading());
-            const response = await MakePayment({
+            const response = await MakePayment(
                 token,
-                amount: selectedSeats.length * show.ticketPrice * 100,
-            });
+                selectedSeats.length * show.ticketPrice * 100,
+            );
             if(response.success){
                 message.success(response.message);
             }
@@ -144,6 +144,7 @@ function BookShow() {
                // currency='INR'
                 token={onToken}
                 amount={selectedSeats.length * show.ticketPrice * 100}
+                billingAddress
                 stripeKey='pk_test_51Ts267LdIVx1OOu0e1lg3GAqtIG2XsMNP707jguaR0oGoX9GLoTpPRU2y275i2VAfwtkF6AhTsBATUa1X4QSXqyi00wg2VrSh8'>
                     <Button title='Book Now' />
                 </StripeCheckout>
