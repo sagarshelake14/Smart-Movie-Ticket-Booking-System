@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Button from "../../components/Button";
 import TheatreForm from "./TheatreForm";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { HideLoading, ShowLoading } from "../../redux/loadersSlice";
 import { message, Table } from "antd";
 import {
   GetAllTheatresByOwner,
   DeleteTheatre,
+  GetAllTheatres
 } from "../../apicalls/theatres";
 import Shows from "./shows";
 
