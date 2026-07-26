@@ -84,6 +84,7 @@ function BookShow() {
     );
 };
 
+
     const book = async (transactionId) => {
     try {
         dispatch(ShowLoading());
@@ -95,7 +96,7 @@ function BookShow() {
         });
         if (response.success) {
             message.success(response.message);
-            navigate('/profile');
+            navigate("/profile");
         } else {
             message.error(response.message);
         }
@@ -116,7 +117,7 @@ function BookShow() {
             );
             if(response.success){
                 message.success(response.message);
-                book(response.data)
+                book(response.data);
             } else{
                 message.error(response.message);
             }

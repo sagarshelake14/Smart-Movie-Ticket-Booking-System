@@ -2,7 +2,7 @@ const router = require("express").Router();
 const stripe = require('stripe')(process.env.stripe_key);
 const authMiddleware = require("../middlewares/authMiddleware");
 const Booking = require('../models/bookingModel');
-const show = require('../models/showModel')
+const Show = require('../models/showModel')
 
 // make payment
 router.post("/make-payment", authMiddleware, async (req, res) => {
@@ -21,11 +21,9 @@ router.post("/make-payment", authMiddleware, async (req, res) => {
             currency: "usd",
             customer: customer.id,
             receipt_email: token.email,
-            description: `Purchased the movie ticket`,
-        },{
-            idempotencyKey: Math.random().toString(36).substring(7),
-        }
-    );
+            description: "Ticket Booked for Movie",
+        });
+
     const transactionId = charge.id;
 
     res.send({

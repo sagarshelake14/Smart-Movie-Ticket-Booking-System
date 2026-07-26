@@ -6,9 +6,10 @@ import { HideLoading, ShowLoading } from "../../redux/loadersSlice";
 import { message, Table, Row, Col } from "antd";
 import { GetBookingsOfUser } from "../../apicalls/bookings";
 import moment from "moment";
+//import { message, Table } from "antd";
 
 function Bookings() {
-  const [bookings, setBookings] = useState([]);
+  const [bookings = [], setBookings] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -27,9 +28,11 @@ function Bookings() {
         message.error(error.message);
     }
  };
+
  useEffect(()=> {
          getData();
  }, [])
+
   return (
     <div>
     <Row gutter={[16, 16]}>
@@ -45,10 +48,27 @@ function Bookings() {
                             {booking.show.theatre.name} ({booking.show.theatre.address})
                         </h1>
                         <h1 className="text-sm">
-                           
+                            Date & Time: {moment(booking.show.date).format("MM Do YYYY")} - 
+                            {moment(booking.show.time, "HH:mm").format("hh mm A")}
+                        </h1>
+                        <h1 className="text-sm">
+                          Amount:  {booking.show.ticketPrice *  booking.seats.length}
+                        </h1>
+                        <h1 className="text-sm">Booking ID: {booking._id}</h1>
+                    </div>
 
+                    <div>
+                        <img src={booking.show.movie.poster} 
+                        alt="" 
+                        height={100}
+                        width={100}
+                        className="br-1"
+                        />
+                         <h1 className="text-sm">
+                            seats: {booking.seats.join(",")}
                         </h1>
                     </div>
+
                 </div>
             </Col>
         ))}
